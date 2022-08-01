@@ -126,7 +126,7 @@ def validate_age_investment(age, investment_amount):
     if investment_amount is not None:
         investment_amount = parse_int(investment_amount)
         if investment_amount < 5000:
-            return build_validation_result(False, "investmentAmount", "The investment amount must be greater than $5,000.")
+            return build_validation_result(False, "investmentAmount", "The investment amount must be greater than or equal to $5,000.")
     
     return build_validation_result(True, None, None)
     
