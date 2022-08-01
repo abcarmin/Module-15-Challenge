@@ -111,6 +111,36 @@ In this section, you will create an Amazon Lambda function that will validate th
 
 """
 
+def validate_age_investment(age, investment_amount):
+    """
+    Validates user input
+    """
+    
+    if age is not None:
+        age = parse_int(age)
+        if age <= 0: 
+            return build_validation_result(False, "age", "You must be older than 0 years old.")
+        elif age >= 65:
+            return build_validation_result(False, "age", "Your must be younger than 65 years old.")
+            
+    if investment_amount is not None:
+        investment_amount = parse_int(investment_amount)
+        if investment_amount < 5000:
+            return build_validation_result(False, "investmentAmount", "The investment amount must be greater than $5,000.")
+    
+    return build_validation_result(True, None, None)
+    
+def get_recommendation(risk_level):
+    risk_level = risk_level.lower()
+    if risk_level == "none":
+        return "100% bonds (AGG), 0% equities (SPY)"
+    elif risk_level == "low":
+        return "60% bonds (AGG), 40% equities (SPY)"
+    elif risk_level == "medium":
+        return "40% bonds (AGG), 60% equities (SPY)"
+    elif risk_level == "high":
+        return "20% bonds (AGG), 80% equities (SPY)"
+
 
 ### Intents Handlers ###
 def recommend_portfolio(intent_request):
@@ -124,7 +154,27 @@ def recommend_portfolio(intent_request):
     risk_level = get_slots(intent_request)["riskLevel"]
     source = intent_request["invocationSource"]
 
-    # YOUR CODE GOES HERE!
+    
+    if source == 'DialogCodeHook':
+        slots = get_slots(intent_request)
+        valid_data = validate_age_investment(age, investment_amount)
+        
+        if valid_data['isValid'] == False:
+            slots[valid_data['violatedSlot']] = None
+            return elicit_slot(intent_request['sessionAttributes'], intent_request['currentIntent']['name'], slots, valid_data['violatedSlot'], valid_data['message'])
+        
+        session_attributes = intent_request['sessionAttributes']
+        
+        return delegate(session_attributes, get_slots(intent_request))
+    
+    recommendation = get_recommendation(risk_level)
+        
+    return close(intent_request['sessionAttributes'], 'Fulfilled', 
+            {
+                'contentType': 'PlainText',
+                'content': f'Thank you {first_name} for your information, based on the risk you chose, I recommend the following allocation: {recommendation}'
+            }
+        )
 
 
 ### Intents Dispatcher ###
@@ -150,3 +200,4 @@ def lambda_handler(event, context):
     """
 
     return dispatch(event)
+
