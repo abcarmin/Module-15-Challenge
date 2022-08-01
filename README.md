@@ -42,6 +42,7 @@ Advanced options: No
 All other options: The default value
 
 
+
 Sample Utterances:
 
 I'm {age} and I want to invest for my retirement
@@ -51,6 +52,7 @@ I want the best option to invest for my retirement
 I'm worried about my retirement
 
 I want to invest for my retirement
+
 
 
 * I built and tested the robo advisor:
@@ -64,6 +66,7 @@ Screenshots from the provided Amazon Lex Bot Video:
 
 ![Screenshot 3](https://github.com/abcarmin/Module-15-Challenge/blob/main/Amazon%20Lex%20bot%20Screenshot3.png)
     
+
 
 * I enhanced the robo advisor with an Amazon Lambda Function:
 
@@ -87,6 +90,7 @@ Additional code that was added to provide validation rules and recommendations:
             return "40% bonds (AGG), 60% equities (SPY)"
         elif risk_level == "high":
             return "20% bonds (AGG), 80% equities (SPY)"
+
 
 Screenshots from the provided Amazon Lex with Lambda Video:
     
